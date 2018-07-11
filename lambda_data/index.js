@@ -5,20 +5,20 @@ const ssmlMediumBreak = "<break time = '0.3s'/>";
 var quizLoc = 0;
 var quizScore = 0;
 
-var quizQuestions = {1: "Am I working?"};
+var quizQuestions = {1: "Am I working?", 2: "Are you working?"};
+var maxNumberOfQuestions = 2;
 var haveAskedQuestions = false;
 
-var quizAnswers = {1 : {a: "yes", b: "no", c: "maybe"}};
+var quizAnswers = { 1: { a: "yes", b: "no", c: "maybe", answer: "a" }, 2: { a: "yes", b: "no", c: "maybe", answer: "c" }};
 var currentAnswerId = 0;
 
 
 var handlers = {
 
-    'LaunchIntent': function() {
-
-        this.response.speak("Hi! Welcome to Big Quiz! You can ask for help or you can say Alexa, Ask Big Quiz for to start quiz ").listen("If you're not sure <break time = '0.15s' />  just ask for help by saying <break time = '0.15s' />  Alexa ask big quiz for help! ");
+    'LaunchRequest': function() {
+        this.response.speak("Hi! Welcome to Big Quiz! You can ask for help or you can say Alexa, Ask Big Quiz to start quiz ").listen("If you're not sure <break time = '0.15s' />  just ask for help by saying <break time = '0.15s' />  Alexa ask big quiz for help! ");
         this.emit(":responseReady");
-        
+
     },
 
     'HelloIntent': function () {
@@ -46,26 +46,32 @@ var handlers = {
     },
 
     'NextQuestionIntent' : function(){
+        if(quizLoc > maxNumberOfQuestions){
+            this.response.speak("You have completed all the questions! Your score is : " + string(quizScore));
+            this.emit(":responseReady");
+        }
         quizLoc +=1;
         haveAskedQuestions = true;
-        this.response.speak("The next question is <break time = '0.4s'/> " + quizQuestions[quizLoc] + "and your choices are : a <break time = '0.3s' />  " + quizAnswers[quizLoc].a + " <break time = '0.15s' />  b <break time = '0.3s' />  " + quizAnswers[quizLoc].b + " <break time = '0.15s' />  and c  <break time = '0.3s' /> \
+        this.response.speak("Your question is <break time = '0.4s'/> " + quizQuestions[quizLoc] + "and your choices are : a <break time = '0.3s' />  " + quizAnswers[quizLoc].a + " <break time = '0.15s' />  b <break time = '0.3s' />  " + quizAnswers[quizLoc].b + " <break time = '0.15s' />  and c  <break time = '0.3s' /> \
          " + quizAnswers[quizLoc].c + "<break time = '0.15s' />  you can answer the question right now <break time = '0.15s' />  or tell me when you're ready <break time = '0.3s' />" ).listen();
         this.emit(":responseReady");
     },
 
     'AnswerQuestionIntent': function(){
         if(haveAskedQuestions === true){
+            haveAskedQuestions = false;
             console.log(this); 
-            var answer = request.intent.slots.this.value;
-            if(quizLoc === 1){
-                if(answer === "c"){
-                    this.response.speak("You are right! ");
-                    this.emit(":responseReady");
-                }
-                else {
-                    this.response.speak("You are wrong");
-                    this.emit(":responseReady");
-                }
+            var answer = this.event.request.intent.slots.this.value;
+            console.log(answer.toString());
+            console.log((quizAnswers[quizLoc].answer).toString())
+            if(answer === (quizAnswers[quizLoc].answer)){
+                this.response.speak("You're right! You have gained one point <break time = '0.3s' /> ");
+                quizScore +=1;
+                this.emit(":responseReady");
+            }
+            else {
+                this.response.speak(" You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + (quizAnswers[quizLoc].answer).toString());
+                this.emit(":responseReady");
             }
         }
         else
