@@ -85,7 +85,7 @@ var handlers = {
             haveAskedQuestions = false;
             console.log(this); 
             var userAnswer = this.event.request.intent.slots.this.value;
-            var actualAnswer = quizAnswers[quizLoc].answer;
+            var actualAnswer = quizAnswers[quizLoc].correct;
           
             if(userAnswer === actualAnswer){
                 this.response.speak("You're right! You have gained one point <break time = '0.3s' /> " + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
@@ -93,7 +93,7 @@ var handlers = {
                 this.emit(":responseReady");
             }
             else {
-                this.response.speak(" You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + (quizAnswer[quizLoc].actualAnswer) + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
+                this.response.speak(" You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + (quizAnswers[quizLoc].actualAnswer) + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
                 this.emit(":responseReady");
             }
         }
