@@ -59,7 +59,7 @@ def interactiveQuestion():
 
     
 
-
+print ("--- Welcome to Alexa Quiz Helper! ---");
 currentQuestionsInFile = []
 someQuestions = []
 with open('questionAnswerData.json', 'r') as questionFile:

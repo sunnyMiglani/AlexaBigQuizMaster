@@ -1,17 +1,34 @@
 "use strict";
 const Alexa = require('alexa-sdk');
 const ssmlMediumBreak = "<break time = '0.3s'/>";
+var fs = require('fs');
 
 var quizLoc = 0;
 var quizScore = 0;
 
-var quizQuestions = {1: "Am I working?", 2: "Is this absolutely painful?"};
+var hasInit = false;
+
+var quizQuestions = [];
 var maxNumberOfQuestions = 1;
 var haveAskedQuestions = false;
 
-var quizAnswers = { 1: { a: "yes", b: "no", c: "maybe", answer: "a" }, 2: { a: "yes", b: "no", c: "maybe", answer: "c" }};
+var quizAnswers = [];
 var currentAnswerId = 0;
 
+var allQuestions;
+
+
+function readQuestions(){
+    allQuestions = JSON.parse(fs.readFileSync('./questionAnswerData.json', 'utf8'));
+    // console.log(allQuestions);
+    for(var question in allQuestions){
+        var actualVal = allQuestions[question];
+        quizQuestions.push(actualVal["question"]);
+        quizAnswers.push(actualVal["answers"]);
+    }
+    console.log(quizQuestions);
+    console.log(quizAnswers);
+}
 
 var handlers = {
 
@@ -42,12 +59,16 @@ var handlers = {
     'StartQuizIntent': function(){
         quizLoc = 0;
         quizScore = 0;
-
+        hasInit = true;
+        readQuestions();
         this.response.speak("I will now set the quiz for you to be tested! <break time = '0.30s' /> Ask me for a question when you'd like to start").listen("You can say <break time = '0.15s' /> Alexa ask big quiz for the next question!");
         this.emit(":responseReady");
     },
 
     'NextQuestionIntent' : function(){
+        if(hasInit === false){
+            this.emit("StartQuizIntent");
+        }
         if(quizLoc > maxNumberOfQuestions){
             this.response.speak("You have completed all the questions! Your score is : " + quizScore.toString());
             this.emit(":responseReady");
