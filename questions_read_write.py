@@ -1,5 +1,5 @@
 import json;
-import pprint;
+import os;
 
 
 '''
@@ -36,7 +36,7 @@ def returnJsonObj(question, answerA, answerB, answerC, correctId):
     return questionsDict;
 
 def interactiveQuestion():
-    shouldLeave = True;
+    shouldLeave = False;
     listOfQuestions = [];
 
     while(shouldLeave == False):
@@ -46,8 +46,8 @@ def interactiveQuestion():
         answerC = input("Please enter answer C : ");
         correct = input("Please enter which option in a,b,c is the correct answer : ");
         while(correct not in ["a", "b", "c", "A", "B", "C"]):
-            correct = input("That's not a valid choice, please enter either a, b or c");
-        listOfQuestions.append(returnJsonObj(questions,answerA, answerB, answerC, correct));
+            correct = input("That's not a valid choice, please enter either a, b or c: ");
+        listOfQuestions.append(returnJsonObj(question,answerA, answerB, answerC, correct));
 
         choice = input("Please say YES if you have more questions to add, else say NO: ");
         if(choice in ["yes", "YES"]):
@@ -61,10 +61,13 @@ def interactiveQuestion():
 
 
 currentQuestionsInFile = []
-with open('questionAnswerData.json', 'w+') as questionFile:
-    someQuestions = json.load(questionFile);
-
-currentQuestionsInFile.append(someQuestions);
+someQuestions = []
+with open('questionAnswerData.json', 'r') as questionFile:
+    if(os.stat("questionAnswerData.json").st_size != 0 ):
+        someQuestions = json.load(questionFile);
+        
+if(someQuestions != []):
+    currentQuestionsInFile.append(someQuestions);
 
 getQuestionsList = interactiveQuestion();
 
