@@ -5,8 +5,8 @@ const ssmlMediumBreak = "<break time = '0.3s'/>";
 var quizLoc = 0;
 var quizScore = 0;
 
-var quizQuestions = {1: "Am I working?", 2: "Are you working?"};
-var maxNumberOfQuestions = 2;
+var quizQuestions = {1: "Am I working?", 2: "Is this absolutely painful?"};
+var maxNumberOfQuestions = 1;
 var haveAskedQuestions = false;
 
 var quizAnswers = { 1: { a: "yes", b: "no", c: "maybe", answer: "a" }, 2: { a: "yes", b: "no", c: "maybe", answer: "c" }};
@@ -16,7 +16,8 @@ var currentAnswerId = 0;
 var handlers = {
 
     'LaunchRequest': function() {
-        this.response.speak("Hi! Welcome to Big Quiz! You can ask for help or you can say Alexa, Ask Big Quiz to start quiz ").listen("If you're not sure <break time = '0.15s' />  just ask for help by saying <break time = '0.15s' />  Alexa ask big quiz for help! ");
+        this.response.speak("Hi! Welcome to Big Quiz! \
+        You can ask for help or you can say Alexa, Ask Big Quiz to start quiz ").listen("If you're not sure <break time = '0.15s' />  just ask for help by saying <break time = '0.15s' />  Alexa ask big quiz for help! ");
         this.emit(":responseReady");
 
     },
@@ -28,12 +29,13 @@ var handlers = {
     'AMAZON.HelpIntent': function () {
         this.response.speak("Hi! Big Quiz is designed to test interactions with a quiz for Alexa <break time = '0.3s' /> \
          This quiz will be focused on history <break time = '0.15s' />  specifically world war 2 germany <break time = '0.3s' />  \
-         To answer a quiz question <break time = '0.15s' />  just reply with the letter corresponding to the correct answer <break time = '0.3s' /> ");
+         To answer a quiz question <break time = '0.15s' />  just reply with the letter corresponding to the correct answer <break time = '0.3s' />.\
+          To make me ask you a question <break time = '0.15s' />  say Alexa ask Big Quiz for a question ");
         this.emit(":responseReady");
     },
 
     'AMAZON.StopIntent': function () {
-        this.response.speak("Bye from Big Quiz!");
+        this.response.speak("");
         this.emit(":responseReady");
     },
 
@@ -47,7 +49,7 @@ var handlers = {
 
     'NextQuestionIntent' : function(){
         if(quizLoc > maxNumberOfQuestions){
-            this.response.speak("You have completed all the questions! Your score is : " + string(quizScore));
+            this.response.speak("You have completed all the questions! Your score is : " + quizScore.toString());
             this.emit(":responseReady");
         }
         quizLoc +=1;
@@ -61,16 +63,16 @@ var handlers = {
         if(haveAskedQuestions === true){
             haveAskedQuestions = false;
             console.log(this); 
-            var answer = this.event.request.intent.slots.this.value;
-            console.log(answer.toString());
-            console.log((quizAnswers[quizLoc].answer).toString())
-            if(answer === (quizAnswers[quizLoc].answer)){
-                this.response.speak("You're right! You have gained one point <break time = '0.3s' /> ");
+            var userAnswer = this.event.request.intent.slots.this.value;
+            var actualAnswer = quizAnswers[quizLoc].answer;
+          
+            if(userAnswer === actualAnswer){
+                this.response.speak("You're right! You have gained one point <break time = '0.3s' /> " + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
                 quizScore +=1;
                 this.emit(":responseReady");
             }
             else {
-                this.response.speak(" You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + (quizAnswers[quizLoc].answer).toString());
+                this.response.speak(" You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + (quizAnswer[quizLoc].actualAnswer) + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
                 this.emit(":responseReady");
             }
         }
@@ -85,6 +87,11 @@ var handlers = {
 
     'Unhandled': function(){
         this.response.speak(" This request does not have any code associated with it! ");
+        this.emit(":responseReady");
+    },
+
+    'WrongAnswerIntent': function(){
+        this.response.speak("This is not a valid answer <break time = '0.15s' />  try saying a <break time = '0.15s' />  b or c as the answers");
         this.emit(":responseReady");
     }
 

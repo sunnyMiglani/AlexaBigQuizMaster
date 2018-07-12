@@ -1,0 +1,125 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "big quiz",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": [
+                        "nevermind",
+                        "cancel",
+                        "stop"
+                    ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": [
+                        "how do i do this",
+                        "please help",
+                        "what do i do",
+                        "help"
+                    ]
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": [
+                        "nevermind",
+                        "cancel",
+                        "stop"
+                    ]
+                },
+                {
+                    "name": "HelloIntent",
+                    "slots": [],
+                    "samples": [
+                        "hello",
+                        "hi"
+                    ]
+                },
+                {
+                    "name": "StartQuizIntent",
+                    "slots": [],
+                    "samples": [
+                        "reset quiz",
+                        "create quiz",
+                        "new quiz",
+                        "Start quiz"
+                    ]
+                },
+                {
+                    "name": "NextQuestionIntent",
+                    "slots": [],
+                    "samples": [
+                        "give me a question",
+                        "another one",
+                        "forward one ",
+                        "next one",
+                        "next question",
+                        "whats the next question"
+                    ]
+                },
+                {
+                    "name": "AnswerQuestionIntent",
+                    "slots": [
+                        {
+                            "name": "this",
+                            "type": "AnswerSlot"
+                        }
+                    ],
+                    "samples": [
+                        "is the answer {this} ",
+                        "how about {this}",
+                        "{this}",
+                        "i think it's {this}",
+                        "is it {this}"
+                    ]
+                },
+                {
+                    "name": "WrongAnswerIntent",
+                    "slots": [],
+                    "samples": [
+                        "maybe",
+                        "no",
+                        "yes"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "AnswerSlot",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "c",
+                                "synonyms": [
+                                    "third"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "b",
+                                "synonyms": [
+                                    "bee",
+                                    "second"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "a",
+                                "synonyms": [
+                                    "yeh",
+                                    "ehh",
+                                    "eh",
+                                    "hey",
+                                    "first"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
