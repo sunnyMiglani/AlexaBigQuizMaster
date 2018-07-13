@@ -9,7 +9,7 @@ var quizScore = 0;
 var hasInit = false;
 
 var quizQuestions = [];
-var maxNumberOfQuestions = 1;
+var maxNumberOfQuestions = 0;
 var haveAskedQuestions = false;
 
 var quizAnswers = [];
@@ -20,11 +20,11 @@ var allQuestions;
 
 function readQuestions(){
     allQuestions = JSON.parse(fs.readFileSync('./questionAnswerData.json', 'utf8'));
-    // console.log(allQuestions);
     for(var question in allQuestions){
         var actualVal = allQuestions[question];
         quizQuestions.push(actualVal["question"]);
         quizAnswers.push(actualVal["answers"]);
+        maxNumberOfQuestions +=1;
     }
     console.log(quizQuestions);
     console.log(quizAnswers);
@@ -40,6 +40,7 @@ var handlers = {
     },
 
     'HelloIntent': function () {
+        readQuestions();
        this.emit('LaunchRequest');
     },
 
@@ -59,6 +60,10 @@ var handlers = {
     'StartQuizIntent': function(){
         quizLoc = 0;
         quizScore = 0;
+        haveAskedQuestions = false;
+        currentAnswerId = 0;
+        maxNumberOfQuestions = 0;
+
         hasInit = true;
         readQuestions();
         this.response.speak("I will now set the quiz for you to be tested! <break time = '0.30s' /> Ask me for a question when you'd like to start").listen("You can say <break time = '0.15s' /> Alexa ask big quiz for the next question!");
@@ -76,24 +81,28 @@ var handlers = {
         quizLoc +=1;
         haveAskedQuestions = true;
         this.response.speak("Your question is <break time = '0.4s'/> " + quizQuestions[quizLoc] + "and your choices are : a <break time = '0.3s' />  " + quizAnswers[quizLoc].a + " <break time = '0.15s' />  b <break time = '0.3s' />  " + quizAnswers[quizLoc].b + " <break time = '0.15s' />  and c  <break time = '0.3s' /> \
-         " + quizAnswers[quizLoc].c + "<break time = '0.15s' />  you can answer the question right now <break time = '0.15s' />  or tell me when you're ready <break time = '0.3s' />" ).listen();
+         " + quizAnswers[quizLoc].c + "<break time = '0.15s' />  you can answer the question right now <break time = '0.15s' />  or tell me when you're ready by saying <break time = '0.15s' /> Alexa, ask big quiz if the answer is a or b or c  <break time = '0.3s' />" ).listen();
         this.emit(":responseReady");
     },
 
     'AnswerQuestionIntent': function(){
         if(haveAskedQuestions === true){
             haveAskedQuestions = false;
-            console.log(this); 
             var userAnswer = this.event.request.intent.slots.this.value;
             var actualAnswer = quizAnswers[quizLoc].correct;
+
+            var introText = "You answered " + "<break time = '0.15s' />" + userAnswer + "<break time = '0.15s' />";
           
+            console.log(userAnswer);
+            console.log(actualAnswer);
             if(userAnswer === actualAnswer){
-                this.response.speak("You're right! You have gained one point <break time = '0.3s' /> " + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
+                this.response.speak(introText + "You're right! You have gained one point <break time = '0.3s' /> " + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
                 quizScore +=1;
                 this.emit(":responseReady");
             }
             else {
-                this.response.speak(" You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + (quizAnswers[quizLoc].actualAnswer) + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
+                console.log(quizAnswers[quizLoc][actualAnswer]);
+                this.response.speak(introText + " You are wrong <break time = '0.15s' /> you have not gained any points <break time = '0.3s' /> . The answer is " + actualAnswer + " <break time = '0.15s' /> "+ (quizAnswers[quizLoc][actualAnswer]) + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
                 this.emit(":responseReady");
             }
         }
@@ -112,7 +121,8 @@ var handlers = {
     },
 
     'WrongAnswerIntent': function(){
-        this.response.speak("This is not a valid answer <break time = '0.15s' />  try saying a <break time = '0.15s' />  b or c as the answers");
+        this.response.speak("");
+        // this.response.speak("This is not a valid answer <break time = '0.15s' />  try saying a <break time = '0.15s' />  b or c as the answers");
         this.emit(":responseReady");
     }
 
