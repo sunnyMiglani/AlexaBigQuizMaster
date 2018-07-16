@@ -48,3 +48,9 @@ There is a check in the program that checks to see if the quiz has been initiali
 
 
 
+## About / Support
+
+Project was made in association with the Bristol Interaction Group, as part of a research project looking into using smart devices such as Alexa to create a more inclusive learning system for sight impaired students in classes. This app in particular was created as a base to test interaction for MCQ based quizes, where button inputs and other non vocal inputs could be tested. 
+
+For support, contact [Sunny Miglani](github.com/sunnymiglani). 
+
