@@ -50,6 +50,10 @@
                     "name": "NextQuestionIntent",
                     "slots": [],
                     "samples": [
+                        "a question",
+                        "for question",
+                        "give me question",
+                        "question",
                         "give me a question",
                         "another one",
                         "forward one ",
