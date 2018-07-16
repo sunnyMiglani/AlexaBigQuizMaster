@@ -80,7 +80,7 @@ var handlers = {
         }
         quizLoc +=1;
         haveAskedQuestions = true;
-        this.response.speak("Your question is <break time = '0.4s'/> " + quizQuestions[quizLoc] + "and your choices are : a <break time = '0.3s' />  " + quizAnswers[quizLoc].a + " <break time = '0.15s' />  b <break time = '0.3s' />  " + quizAnswers[quizLoc].b + " <break time = '0.15s' />  and c  <break time = '0.3s' /> \
+        this.response.speak(" Question:  <break time = '0.15s' /> " + quizLoc + "Your question is <break time = '0.4s'/> " + quizQuestions[quizLoc] + "and your choices are : a <break time = '0.3s' />  " + quizAnswers[quizLoc].a + " <break time = '0.15s' />  b <break time = '0.3s' />  " + quizAnswers[quizLoc].b + " <break time = '0.15s' />  and c  <break time = '0.3s' /> \
          " + quizAnswers[quizLoc].c + "<break time = '0.15s' />  you can answer the question right now <break time = '0.15s' />  or tell me when you're ready by saying <break time = '0.15s' /> Alexa, ask big quiz if the answer is a or b or c  <break time = '0.3s' />" ).listen();
         this.emit(":responseReady");
     },
@@ -91,11 +91,18 @@ var handlers = {
             var userAnswer = this.event.request.intent.slots.this.value;
             var actualAnswer = quizAnswers[quizLoc].correct;
 
-            var introText = "You answered " + "<break time = '0.15s' />" + userAnswer + "<break time = '0.15s' />";
+            var introText = "You answered " + "<break time = '0.15s' />" + userAnswer + "<break time = '0.15s' /> for question " + quizLoc + " <break time = '0.15s' /> ";
           
-            console.log(userAnswer);
-            console.log(actualAnswer);
-            if(userAnswer === actualAnswer){
+            console.log("User: "+ userAnswer.toString());
+            console.log("actualAnswer: " + actualAnswer.toString());
+
+            userAnswer = userAnswer.toLowerCase();
+
+            if(userAnswer.length > 1){
+                userAnswer = userAnswer.charAt(0);
+            }
+
+            if(userAnswer.toLowerCase() === actualAnswer.toLowerCase()){
                 this.response.speak(introText + "You're right! You have gained one point <break time = '0.3s' /> " + " <break time = '0.15s' /> If you would like to continue <break time='0.15s' />  ask me for another question").listen();
                 quizScore +=1;
                 this.emit(":responseReady");
