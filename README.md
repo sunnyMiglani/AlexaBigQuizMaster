@@ -44,7 +44,11 @@ There is a check in the program that checks to see if the quiz has been initiali
 
 3. Allow users to check current score at any point / include it in the questions being asked.
 
+4. BUG: The user can say `A` but alexa might hear it as `Hey` and consider the answer incorrect, a solution for this is to simply add a check that says if (~ any form of hey/Hey/HEY ~) : answer = A.
 
+5. BUG: At some point the program might lose track of how many questions have been done, and might repeat questions, a simple system to keep track of this is to use the JSON file to have a tag that says number of questions completed. Make sure to reset this whenever the program ends.
+
+This can be done using the EndOfSessionIntent (official name unknown) that exists in Alexa's requests.
 
 
 
