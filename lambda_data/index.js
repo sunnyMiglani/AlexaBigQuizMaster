@@ -67,7 +67,7 @@ var handlers = {
         hasInit = true;
         readQuestions();
         this.response.speak("I will now set the quiz for you to be tested! <break time = '0.30s' /> Ask me for a question when you'd like to start").listen("You can say <break time = '0.15s' /> Alexa ask big quiz for the next question!");
-        this.emit(":responseReady");
+        this.emit("NextQuestionIntent");
     },
 
     'NextQuestionIntent' : function(){
